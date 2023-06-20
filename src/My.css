@@ -1,0 +1,14 @@
+.carousel-item{
+    height: 750px;
+    background-color: #000;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .canvas{
+    position :absolute;
+   transform:scale(0.3125);
+   left:-500px; 
+   top:-350px; 
+  }
