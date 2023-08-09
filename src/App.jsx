@@ -7,7 +7,6 @@ const fileTypes = ["JPG", "PNG", "GIF"];
 const colors = ["red", "green", "yellow", "black", "blue"];
 
 import { useSelector, useDispatch } from "react-redux";
-import { uploadData } from "./redux/files.slice";
 
 function App() {
   const dispatch = useDispatch();
@@ -254,7 +253,6 @@ function App() {
           //   "The Photo with the barcode number will be uploaded to the database"
           // );
           const image = canvasRef.current.toDataURL("image/png");
-          dispatch(uploadData(image));
         }}
       >
         Upload to cloud

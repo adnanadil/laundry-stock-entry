@@ -1,13 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
 import { storage } from "../firebase";
 import { db } from "../firebase";
-import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import {
   addItemIfUnique,
   updatePercentage,
@@ -25,76 +24,6 @@ const initialState = {
 };
 
 // This the redux Thunks function it is used to carry out async logic
-export const uploadData = (image) => {
-  return async (dispatch, getState) => {
-    // We will first of all dispatch the action to include the new image data in the redux
-    // with other details such as ID, status, comment on the image, barcode etc..
-    // dispatch(increment());
-
-    // The next step is to upload the image and other details to the cloud
-    // Have to declare the response variable outside the try block
-    let response;
-    const secondState = getState();
-
-    try {
-      // We will carry out the upload here...
-      // We will also look into the logic of adding the progress bar here...
-      //   response = await myAjaxLib.post("/someEndpoint", { data: someValue });
-      const storageRef = ref(
-        storage,
-        `test/${secondState.uploadFilesReducer.file.name}`
-      );
-
-      //   const image = canvasRef.current.toDataURL("image/png");
-      const blob = await (await fetch(image)).blob();
-      //   uploadBytes(storageRef, blob).then((snapshot) => {
-      //     console.log("Uploaded a blob or file!");
-      //   });
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          // console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              // console.log("Upload is paused");
-              break;
-            case "running":
-              // console.log("Upload is running");
-              break;
-          }
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            // console.log("File available at", downloadURL);
-          });
-        }
-      );
-    } catch (error) {
-      // Ensure we only catch network errors
-      //   dispatch(requestFailed(error.message));
-      // Bail out early on failure
-      console.log(`Error: ${error}`);
-      return;
-    }
-
-    // We now have the result and there's no error. Dispatch "fulfilled".
-    // We will also the remove the item from local redux as there is no need to display it
-    // dispatch(requestSucceeded(response.data));
-    // dispatch(incrementByAmount(someValue));
-    console.log(`from thunk ${secondState.uploadFilesReducer.value}`);
-  };
-};
-
 export const uploadImageAndDetails = (imageAndDetailsObject) => {
   return async (dispatch, getState) => {
     // We add the new entry to allFiles state value of the store
