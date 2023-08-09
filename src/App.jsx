@@ -6,7 +6,14 @@ const fileTypes = ["JPG", "PNG", "GIF"];
 
 const colors = ["red", "green", "yellow", "black", "blue"];
 
+import { useSelector, useDispatch } from "react-redux";
+import { uploadData } from "./redux/files.slice";
+
 function App() {
+  const dispatch = useDispatch();
+  const number = useSelector((state) => state.uploadFilesReducer.value);
+  // const file = useSelector((state) => state.uploadFilesReducer.file);
+
   // Getting image
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(null);
@@ -22,9 +29,14 @@ function App() {
   // Upload photo
   const [file, setFile] = useState();
   function handleChange(e) {
-    console.log(e.target.files);
-    if (e.target.files[0] !== undefined){
-      console.log("We still come here")
+    if (e.target.files.length > 5) {
+      alert("Only 5 files accepted.");
+      e.preventDefault();
+      return;
+    }
+    console.log(`These are the files: ${e.target.files}`);
+    if (e.target.files[0] !== undefined) {
+      console.log("We still come here");
       setFile(URL.createObjectURL(e.target.files[0]));
       autoLoadImage(URL.createObjectURL(e.target.files[0]));
     }
@@ -72,6 +84,7 @@ function App() {
     if (canvasRef.current) {
       ctx.current = canvasRef.current.getContext("2d");
     }
+    console.log(canvasRef.current)
   }, []);
 
   const draw = useCallback(
@@ -96,7 +109,7 @@ function App() {
   );
 
   const download = async () => {
-    try{
+    try {
       const image = canvasRef.current.toDataURL("image/png");
       const blob = await (await fetch(image)).blob();
       const blobURL = URL.createObjectURL(blob);
@@ -104,9 +117,13 @@ function App() {
       link.href = blobURL;
       // link.href = file;
       link.download = "image.png";
-      link.click();
-    }catch(e){
-      console.log(e)
+      // link.click();
+      console.log(blob)
+      let blob_new = await fetch(blobURL).then(r => r.blob());
+      console.log(blobURL)
+      console.log(blob_new)
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -118,6 +135,7 @@ function App() {
       ctx.current.canvas.height
     );
     autoLoadImage(file);
+    console.log(`Hello there: ${number}`);
   };
 
   const loadImage = () => {
@@ -204,7 +222,7 @@ function App() {
           allowTaint: true,
           foreignObjectRendering: true,
           width: 564,
-          height: 400
+          height: 400,
           // background: "https://images.unsplash.com/photo-1483232539664-d89822fb5d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG8lMjBiYWNrZ3JvdW5kfGVufDB8fDB8fHww&w=1000&q=80"
         }}
         // width={imgWidth}
@@ -228,9 +246,19 @@ function App() {
         ))}
       </select>
       <button onClick={clear}>Clear</button>
-      {/* <button onClick={download}>Download</button> */}
+      <button onClick={download}>Download</button>
       <input type="text" placeholder="Enter Barcode"></input>
-      <button onClick={() => {alert("The Photo with the barcode number will be uploaded to the database")}}>Upload to cloud</button>
+      <button
+        onClick={() => {
+          // alert(
+          //   "The Photo with the barcode number will be uploaded to the database"
+          // );
+          const image = canvasRef.current.toDataURL("image/png");
+          dispatch(uploadData(image));
+        }}
+      >
+        Upload to cloud
+      </button>
       {/* <button onClick={loadImage}>Load Image</button> */}
 
       {/* <Webcam
@@ -242,7 +270,19 @@ function App() {
       />
       <button onClick={capture}>Capture photo</button> */}
       <h2>Add Image:</h2>
-      <input type="file" onChange={handleChange} />
+      <input
+        type="file"
+        onChange={handleChange}
+        multiple="multiple"
+        id="files"
+        className={"hidden"}
+        accept=".jpeg, .jpg, .gif, .png"
+      />
+
+      {/* <input type="file" id="file-input" name="file-input" />
+      <label id="file-input-label" htmlFor="file-input">
+        Select a File
+      </label> */}
       {/* <FileUploader
         handleChange={handleChange_2}
         name="file"

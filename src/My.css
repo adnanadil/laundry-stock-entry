@@ -12,3 +12,14 @@
    left:-500px; 
    top:-350px; 
   }
+
+  #file-input {
+    display: none;
+  }
+  
+  #file-input-label {
+    font-size: 1.3em;
+    padding: 10px 15px;
+    border: 1px solid black;
+    border-radius: 4%;
+  }
