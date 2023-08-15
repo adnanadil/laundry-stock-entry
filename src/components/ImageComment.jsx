@@ -7,7 +7,7 @@ import { changeUploadState, uploadImageAndDetails } from "../redux/files.slice";
 
 import { v4 as uuidv4 } from "uuid";
 
-export const ImageComment = ({ id, imgURL }) => {
+export const ImageComment = ({ id, imgURL, removeItem }) => {
   const [comment, setComment] = useState("No Comments Made!");
   const [imgBlogURL, setImgBlogURL] = useState();
 
@@ -53,6 +53,7 @@ export const ImageComment = ({ id, imgURL }) => {
     }
   }
 
+
   const commentedAdded = (e) => {
     setComment(e.target.value);
   };
@@ -85,6 +86,7 @@ export const ImageComment = ({ id, imgURL }) => {
         className={"hidden"}
         accept=".jpeg, .jpg, .gif, .png"
       />
+      <button onClick={() => removeItem(id)}>Delete</button>
     </div>
   );
 };
@@ -92,4 +94,5 @@ export const ImageComment = ({ id, imgURL }) => {
 ImageComment.propTypes = {
   imgURL: PropTypes.string,
   id: PropTypes.number,
+  removeItem: PropTypes.func
 };

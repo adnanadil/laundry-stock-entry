@@ -17,10 +17,11 @@ const initialState = {
   value: 0,
   file: "",
   // Delete above this as we don't use it
+  filesLoadedFromComputer: [],
   allFiles: [], // Array of objects of individual image ... we will track the images by barcode to group and UUID to update their details
   barcodeArray: [], // This array holds all the barcodes of the items that are being uploaded
   upload: false, // Upload button pressed in UI
-  barcode: "DefCode", // Barcode Scanned in the upload page
+  barcode: "", // Barcode Scanned in the upload page
 };
 
 // This the redux Thunks function it is used to carry out async logic
@@ -170,8 +171,19 @@ export const fileSlice = createSlice({
       state.value = action.payload;
     },
     // Functions above this are waste and we will have to delete them
-
+   
     // We will use this function to remove all items related to a barcode (action not in use anywhere)
+    setFilesLoadedFromComputer: (state, action) => {
+      state.filesLoadedFromComputer = action.payload
+    },
+    addToFilesLoadedFromComputer: (state, action) => {
+      state.filesLoadedFromComputer = state.filesLoadedFromComputer.push(action.payload)
+    },
+    deleteFromFilesLoadedFromComputer: (state, action) => {
+      state.filesLoadedFromComputer = state.filesLoadedFromComputer.filter(
+        (eachItem) => eachItem !== action.payload
+      );
+    },
     deleteAllEntriesForBarcode: (state, action) => {
       state.allFiles = state.allFiles.filter(
         (eachItem) => eachItem.barcode !== action.payload
@@ -209,6 +221,9 @@ export const {
   increment,
   decrement,
   incrementByAmount,
+  setFilesLoadedFromComputer,
+  addToFilesLoadedFromComputer,
+  deleteFromFilesLoadedFromComputer,
   deleteAllEntriesForBarcode,
   updatePercentageOfUpload,
   updateStatusOfUpload,

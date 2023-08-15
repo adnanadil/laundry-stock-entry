@@ -53,6 +53,7 @@ export default function Header({ onOpenNav }) {
           sx={{
             mr: 1,
             color: "text.primary",
+            // If the screen is full size then we will hide the icon
             display: { lg: "none" },
           }}
         >
